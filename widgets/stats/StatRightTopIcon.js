@@ -4,11 +4,14 @@
 // import node module libraries
 import PropTypes from 'prop-types';
 import { Card } from 'react-bootstrap';
+import Link from 'next/link';
+
 
 const StatRightTopIcon = props => {
     const { info } = props;
     return (
-        <Card>
+        <Link href={info.link}>
+        <Card >
             <Card.Body>
                 <div className="d-flex justify-content-between align-items-center mb-3">
                     <div>
@@ -24,6 +27,7 @@ const StatRightTopIcon = props => {
                 </div>
             </Card.Body>
         </Card>
+        </Link>
     )
 }
 

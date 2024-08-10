@@ -32,7 +32,7 @@ export const DashboardMenu = [
 	},
 	{
 		id: uuid(),
-		title: 'LAYOUTS & PAGES',
+		title: 'Tables',
 		grouptitle: true
 	},
 	// {
@@ -47,22 +47,16 @@ export const DashboardMenu = [
 	// 		{ id: uuid(), link: '/not-found', name: '404 Error' }
 	// 	]
 	// },	
-	// {
-	// 	id: uuid(),
-	// 	title: 'Authentication',
-	// 	icon: 'lock',
-	// 	children: [
-	// 		{ id: uuid(), link: '/authentication/sign-in', name: 'Sign In' },
-	// 		{ id: uuid(), link: '/authentication/sign-up', name: 'Sign Up' },
-	// 		{ id: uuid(), link: '/authentication/forget-password', name: 'Forget Password'}			
-	// 	]
-	// },
-	// {
-	// 	id: uuid(),
-	// 	title: 'Layouts',
-	// 	icon: 'layout',
-	// 	link: '/layout-vertical'
-	// },	
+	{ id: uuid(),icon: 'layout', link: '/vendorTable', title: 'Vendor Master Table'},
+
+	// { id: uuid(), link: '/pages/pricing', name: 'Pricing'},
+	{
+		id: uuid(),
+		title: 'Returns Master Table',
+		icon: 'layout',
+		link: '/returns'
+	},	
+	{ id: uuid(),icon: 'layers', link: '/empTable', title: 'Employee Master Table' },
 	// {
 	// 	id: uuid(),
 	// 	title: 'UI COMPONENTS',

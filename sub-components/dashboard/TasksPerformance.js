@@ -8,7 +8,7 @@ const Chart = dynamic(() => import('react-apexcharts'), { ssr: false });
 
 
 const Charts = () => {
-    const perfomanceChartSeries = [100, 78, 89];
+    const perfomanceChartSeries = [58,100, 78, 89];
     const perfomanceChartOptions = {
         dataLabels: { enabled: !1 },
         labels: ['Direct', 'Referral', 'Organic'],
@@ -18,7 +18,7 @@ const Charts = () => {
                 startAngle: -168,
                 endAngle: -450,
                 hollow: {
-                    size: '55%',
+                    size: '45%',
                 },
                 track: {
                     background: 'transaprent',
@@ -95,7 +95,7 @@ const Charts = () => {
                     </div>
                     <ActionMenu />
                 </div>
-                <div className="mb-8">
+                <div className="mb-9">
                     <Chart
                         options={perfomanceChartOptions}
                         series={perfomanceChartSeries}
