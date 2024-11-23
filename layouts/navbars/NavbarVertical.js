@@ -93,7 +93,7 @@ const NavbarVertical = (props) => {
 	};
 
 	const isMobile = useMediaQuery({ maxWidth: 767 });
-
+	const menuItems = DashboardMenu();
 	return (
 		<Fragment>
 			<SimpleBar style={{ maxHeight: '100vh' }}>
@@ -104,7 +104,7 @@ const NavbarVertical = (props) => {
 				</div>				
 				{/* Dashboard Menu */}
 				<Accordion defaultActiveKey="0" as="ul" className="navbar-nav flex-column">
-					{DashboardMenu.map(function (menu, index) {
+					{menuItems.map(function (menu, index) {
 						if (menu.grouptitle) {
 							return (
 								<Card bsPrefix="nav-item" key={index}>

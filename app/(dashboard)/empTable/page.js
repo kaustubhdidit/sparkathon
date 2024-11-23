@@ -1,103 +1,242 @@
 'use client'
-// import node module libraries
-import { Row, Col, Container } from 'react-bootstrap';
-import Link from 'next/link';
-import { ProgressBar,  Card,ListGroup, Table, Image, Dropdown, Modal, Button, Tooltip,OverlayTrigger } from 'react-bootstrap';
-import ActiveProjectsData from "data/dashboard/ActiveProjectsData";
-// import widget as custom components
-import { PageHeading } from 'widgets'
 
-// import sub components
-// import { BillingAddress, CurrentPlan } from 'sub-components'
+import { Row, Col, Modal, Container, Card, Table, Button, Form } from 'react-bootstrap';
+import { useState, useEffect } from 'react';
+import { useUser } from 'src/context/userContext';
+import { useRouter } from 'next/navigation';
 
 const Billing = () => {
+  const { user } = useUser();
+  const [products, setProducts] = useState([]);
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [newProduct, setNewProduct] = useState({
+    pid: '', // Added field for Product Id
+    name: '',
+    description: '',
+    price: '',
+    available: false,
+  });
+
+  // Fetch all products from the backend
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/getAllProd`, {
+          method: 'GET',
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+          setProducts(data.products);
+        } else {
+          console.error('Error fetching products:', data);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const handleToggleAvailability = async (pid) => {
+    try {
+      // Find the product to update
+      const productToUpdate = products.find((product) => product.pid === pid);
   
+      if (!productToUpdate) {
+        console.error('Product not found.');
+        return;
+      }
+  
+      // Make an API call to update the availability in the backend
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/updateAva`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          pid: productToUpdate.pid,
+          available: !productToUpdate.available, // Toggle availability
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        // Update the product's availability in the frontend state
+        const updatedProducts = products.map((product) =>
+          product.pid === pid ? { ...product, available: !product.available } : product
+        );
+        setProducts(updatedProducts);
+      } else {
+        console.error('Error updating product availability:', data);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewProduct(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleAddProduct = async () => {
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/addProd`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newProduct),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setProducts(prevProducts => [...prevProducts, data.product]);
+        setShowAddProductModal(false);
+      } else {
+        console.error('Error adding product:', data);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
   return (
     <Container fluid className="p-6">
-      {/* Page Heading */}
-      <PageHeading heading="Employee Master Table" />
+      <Row className="mb-4">
+        <Col md={12}>
+          <Button variant="primary" onClick={() => setShowAddProductModal(true)}>
+            Add Product
+          </Button>
+        </Col>
+      </Row>
 
-    
+      {/* Product Table */}
       <Row className="mt-6">
-            <Col md={12} xs={12}>
-                <Card>
-                    <Card.Header className="bg-white  py-4">
-                        <h4 className="mb-0">Employee Order Details</h4>
-                    </Card.Header>
-                    <Table responsive className="text-nowrap mb-0">
-                        <thead className="table-light">
-                            <tr>
-                                <th>Employee Code</th>
-                                <th>Name</th>
-                                <th>Contact Number</th>
-                                <th>Defected Lot</th>
-                                <th>Returned Lot</th>
-                                <th>Remaining</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {ActiveProjectsData.map((item, index) => {
-                                return (
-                                    <tr key={index}>
-                                        <td className="align-middle">
-                                            <div className="d-flex align-items-center">
-                                                <div>
-                                                    {/* <div className={`icon-shape icon-md border p-4 rounded-1 ${item.brandLogoBg}`}>
-                                                        <Image src={item.brandLogo} alt="" />
-                                                    </div> */}
-                                                </div>
-                                                <div className="ms-3 lh-1">
-                                                    <h5 className=" mb-1">
-                                                        <Link href="#" className="text-inherit">{item.empId}</Link></h5>
-                                                </div>
-                                            </div>
-                                        </td>
-                                       
-                                        <td className="align-middle">{item.hours}</td>
-                                        <td className="align-middle"><span className={`badge bg-${item.priorityBadgeBg}`}>{item.priority}</span></td>
-                                        <td className="align-left text-dark">
-                                            <Button className="align-left" variant='none' onClick={() => setScrollShow(true)}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-  <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8M1.173 8a13 13 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5s3.879 1.168 5.168 2.457A13 13 0 0 1 14.828 8q-.086.13-.195.288c-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5s-3.879-1.168-5.168-2.457A13 13 0 0 1 1.172 8z"/>
-  <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5M4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0"/>
-</svg>
-            </Button>
+        <Col md={12} xs={12}>
+          <Card>
+            <Card.Header className="bg-white py-4">
+              <h4 className="mb-0">Product Details</h4>
+            </Card.Header>
+            <Table responsive className="text-nowrap mb-0">
+              <thead className="table-light">
+                <tr>
+                  <th>Product Id</th>
+                  <th>Name</th>
+                  <th>Description</th>
+                  <th>Price/Unit</th>
+                  <th>Availability</th>
+                </tr>
+              </thead>
+              <tbody>
+                {products.map((product, index) => (
+                  <tr key={index}>
+                    <td>{product.pid}</td>
+                    <td>{product.name}</td>
+                    <td>{product.description}</td>
+                    <td>{product.price}</td>
+                    <td>
+                    <Form.Check
+  type="switch"
+  id={`availability-${product.pid}`}
+  label={product.available ? 'Available' : 'Unavailable'}
+  checked={product.available}
+  onChange={() => handleToggleAvailability(product.pid)}
+/>
 
-                                                
-                                        </td>
-                                        <td className="align-middle">{item.hours}</td>
-                                        <td className=" text-dark" >
-                                        <OverlayTrigger
-    key='top'
-    placement='top'                                
-    overlay={
-        <Tooltip id={`tooltip-top`}>
-     Return
-        </Tooltip>
-    }
-    >
-      
-                                            <Button className="align-left" variant='none' onClick={() => setRetMod(true)}>
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-return-left" viewBox="0 0 16 16">
-  <path fill-rule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5"/>
-</svg>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Card>
+        </Col>
+      </Row>
+
+      {/* Add Product Modal */}
+      {showAddProductModal && (
+        <Modal show={showAddProductModal} onHide={() => setShowAddProductModal(false)}>
+          <Modal.Header closeButton>
+            <Modal.Title>Add New Product</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group className="mb-3">
+                <Form.Label>Product Id</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="pid"
+                  value={newProduct.pid}
+                  onChange={handleChange}
+                  placeholder="Enter product id"
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Product Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="name"
+                  value={newProduct.name}
+                  onChange={handleChange}
+                  placeholder="Enter product name"
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Description</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="description"
+                  value={newProduct.description}
+                  onChange={handleChange}
+                  placeholder="Enter product description"
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Label>Price per Unit</Form.Label>
+                <Form.Control
+                  type="number"
+                  name="price"
+                  value={newProduct.price}
+                  onChange={handleChange}
+                  placeholder="Enter product price"
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
+                <Form.Check
+                  type="checkbox"
+                  label="Available"
+                  checked={newProduct.available}
+                  onChange={() =>
+                    setNewProduct(prev => ({ ...prev, available: !prev.available }))
+                  }
+                />
+              </Form.Group>
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowAddProductModal(false)}>
+              Close
             </Button>
-</OverlayTrigger>                                       
-                                        </td>
-                                       
-                                    </tr>
-                                )
-                            })}
-                        </tbody>
-                    </Table>
-                    <Card.Footer className="bg-white text-center">
-                        <Link href="#" className="link-primary">View All Projects</Link>
-                    </Card.Footer>
-                </Card>
-            </Col>
-        </Row>
+            <Button variant="primary" onClick={handleAddProduct}>
+              Add Product
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </Container>
-  )
-}
+  );
+};
 
-export default Billing
+export default Billing;
