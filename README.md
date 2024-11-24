@@ -1,7 +1,3 @@
-Here's the complete README file for your project in one go:
-
-```markdown
-
 # Sparkathon - RBAC App Frontend
 
 This is the frontend of the Sparkathon application, built using React and Next.js. The app provides a user interface for role-based access control (RBAC) that interacts with the backend API for managing orders, user roles, and other functionalities.
@@ -125,5 +121,3 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 For any inquiries or issues, feel free to create an issue in the GitHub repository or reach out to the project maintainers.
 
 ```
-
-This should cover everything needed to set up the project and provide additional context and instructions.
