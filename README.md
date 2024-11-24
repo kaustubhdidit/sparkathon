@@ -1,4 +1,4 @@
-# Sparkathon - RBAC App Frontend
+# Assignment - RBAC App Frontend
 
 This is the frontend of the Sparkathon application, built using React and Next.js. The app provides a user interface for role-based access control (RBAC) that interacts with the backend API for managing orders, user roles, and other functionalities.
 
