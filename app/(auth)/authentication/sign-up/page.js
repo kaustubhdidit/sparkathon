@@ -50,7 +50,7 @@ const SignUp = () => {
           const data = await response.json();
           
           if (response.ok) {
-            console.log('Registration successful', data);
+            // console.log('Registration successful', data);
 
             // Extract user and token details
             const { authToken, data: userData } = data;

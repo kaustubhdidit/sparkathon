@@ -42,7 +42,7 @@ const SignIn = () => {
         const data = await response.json();
 
         if (response.ok) {
-            console.log('Login successful', data);
+            // console.log('Login successful', data);
 
             // Extract user and token details
             const { authToken, data: userData } = data;
