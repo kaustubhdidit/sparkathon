@@ -1,56 +1,19 @@
-# [DashUI Next.js Free Admin Template](https://dashui-free-nextjs-admin-template.vercel.app/)
- Dash UI - Next.js Free admin / dashboard  template created by [Codescandy](https://codescandy.com/) and available on Github
+# Sparkathon - RBAC App Frontend
 
-![dashui-free-nextjs-admin-template](https://user-images.githubusercontent.com/68774600/231716707-3da30d19-b826-4692-b03a-fed41376d250.jpg)
+This is the frontend of the Sparkathon application, built using React and Next.js. The app provides a user interface for role-based access control (RBAC) that interacts with the backend API for managing orders, user roles, and other functionalities.
 
- 
-## How to use DashUI?
+## Prerequisites
 
-Clone the Dash UI repo:
-```
-git clone https://github.com/codescandy/dashui-free-nextjs-admin-template.git
-```
-```
-cd dashui-free-nextjs-admin-template
-```
+Before you begin, ensure you have the following installed on your system:
 
-##  🚀 Getting Started 
+- **Node.js** (version 16 or higher)
+- **npm** (version 8 or higher)
 
-### Installation 👨🏻‍💻
+## Setup Instructions
 
-1. Install all packages
+1. **Clone the Repository**:
 
-```
-npm i
-```
+   Start by cloning the repository to your local machine:
 
-2. Run Development Server
-
-```
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-
-3. Build your project
-
-```
-npm run build
-```
-
-## Dash UI Next.js Free / Pro Version
-
-| Free Version        | Dash UI Pro
-|---------------------|-------------------------------------------- |
-| 1 Dashboard      | Coming Soon...                                |
-| Profile      | -                                           |
-| Settings | -                                     |
-| Billing |
-| Pricing |
-| 404 Error |
-| Authentication |
-| [Demo](https://dashui-free-nextjs-admin-template.vercel.app/) |
-
-## Technical Support or Questions
-If you have questions or need help integrating the product please [contact us](https://codescandy.com/contact-us/).
-
+   ```bash
+   git clone https://github.com/kaustubhdidit/sparkathon.git
