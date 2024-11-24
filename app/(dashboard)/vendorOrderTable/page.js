@@ -1,12 +1,15 @@
 'use client';
 
-import { Row, Col, Container, Card, Table, Badge, Form } from 'react-bootstrap';
+import { Row, Col, Container, Card, Table, Badge, Form, InputGroup, FormControl } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { useUser } from 'src/context/userContext';
 
 const Layout = () => {
   const { user } = useUser(); // Assuming `user` contains role information
   const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('All'); // Filter: All, Pending, Delivered
 
   // Fetch all orders for the vendor
   useEffect(() => {
@@ -23,6 +26,7 @@ const Layout = () => {
 
         if (response.ok) {
           setOrders(data.orders);
+          setFilteredOrders(data.orders); // Initialize filtered orders
         } else {
           console.error('Error fetching orders:', data);
         }
@@ -33,6 +37,25 @@ const Layout = () => {
 
     fetchOrders();
   }, [user.email]);
+
+  // Handle search and filter
+  useEffect(() => {
+    let filtered = orders;
+
+    // Apply search filter (by product ID)
+    if (searchTerm) {
+      filtered = filtered.filter((order) =>
+        order.pid.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Apply status filter (Pending, Delivered)
+    if (statusFilter !== 'All') {
+      filtered = filtered.filter((order) => order.deliveryStatus === statusFilter);
+    }
+
+    setFilteredOrders(filtered);
+  }, [searchTerm, statusFilter, orders]);
 
   const handleStatusToggle = async (orderId, currentStatus) => {
     const updatedStatus = currentStatus === 'Delivered' ? 'Pending' : 'Delivered';
@@ -63,6 +86,29 @@ const Layout = () => {
 
   return (
     <Container fluid className="p-6">
+      {/* Search and Filter */}
+      <Row className="mb-4">
+        <Col md={6}>
+          <InputGroup>
+            <FormControl
+              placeholder="Search by Product Id"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </InputGroup>
+        </Col>
+        <Col md={4}>
+          <Form.Select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="All">All Statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Delivered">Delivered</option>
+          </Form.Select>
+        </Col>
+      </Row>
+
       {/* Orders Table */}
       <Row className="mt-6">
         <Col md={12} xs={12}>
@@ -81,7 +127,7 @@ const Layout = () => {
                 </tr>
               </thead>
               <tbody>
-                {orders.map((order, index) => (
+                {filteredOrders.map((order, index) => (
                   <tr key={index}>
                     <td>{order.empEmail}</td>
                     <td>{order.pid}</td>

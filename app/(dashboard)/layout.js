@@ -16,7 +16,7 @@ export default function DashboardLayout({ children }) {
 
     // Client-side check for localStorage
     useEffect(() => {
-		console.log("Env Variable "+process.env.NEXT_PUBLIC_BACKEND_URL)
+		// console.log("Env Variable "+process.env.NEXT_PUBLIC_BACKEND_URL)
         if (!localStorage.getItem("authData")) {
             router.push('/authentication/sign-in');
         } else {

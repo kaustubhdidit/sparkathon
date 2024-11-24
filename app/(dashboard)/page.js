@@ -131,8 +131,9 @@ const Home = () => {
     };
 
     const {user}=useUser();
-
+    const formattedRole = user.role.charAt(0).toUpperCase() + user.role.slice(1);
     return (
+        <>
         <Fragment>
             <div className="bg-primary pt-10 pb-21"></div>
             <Container fluid className="mt-n22 px-6">
@@ -141,8 +142,9 @@ const Home = () => {
                         <div>
                             <div className="d-flex justify-content-between align-items-center">
                                 <div className="mb-2 mb-lg-0">
-                                    <h3 className="mb-0 text-white">User Management</h3>
+                                    <h2 className="mb-0 text-white">Hello {user.name},</h2>
                                 </div>
+                                
                                 {user.role==="admin" && <div>
                                     <Button
                                         variant="white"
@@ -152,17 +154,27 @@ const Home = () => {
                                     </Button>
                                 </div>}
                             </div>
+                            <br />
+                            <div className="mb-2 mb-lg-0">
+                                    <h2 className="mb-0 text-white">You are signed in as <span style={{
+    background: "linear-gradient(to right, yellow, orange)", // Gradient colors
+    WebkitBackgroundClip: "text", // Clips the background to the text
+    WebkitTextFillColor: "transparent", // Makes the text itself transparent
+  }}>{formattedRole}</span></h2>
+                                </div>
                         </div>
                     </Col>
                 </Row>
-                <ActiveProjects />
+                
+                {/* <ActiveProjects /> */}
 
-                <Row className="my-6">
+                {/* <Row className="my-6">
                     <Col xl={12} lg={12} md={12} xs={12} className="mb-6 mb-xl-0">
                         <TasksPerformance />
                     </Col>
-                </Row>
+                </Row> */}
             </Container>
+            
             <UserRegistrationModal
                 show={showModal}
                 handleClose={() => setShowModal(false)}
@@ -170,7 +182,11 @@ const Home = () => {
                 formData={formData}
                 handleChange={handleChange}
             />
+            
         </Fragment>
+        
+    </>
+        
     );
 };
 

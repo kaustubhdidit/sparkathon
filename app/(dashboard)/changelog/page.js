@@ -106,6 +106,28 @@ const ChangeLog = () => {
         }
     };
 
+    const handleDeleteUser = async (user) => {
+        if (!confirm(`Are you sure you want to delete ${user.name}?`)) return;
+    
+        try {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/users/delete/${user._id}`, {
+                method: "DELETE",
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+                alert("User deleted successfully!");
+                setUsers(users.filter((u) => u._id !== user._id));
+            } else {
+                alert(`Failed to delete user: ${data.message}`);
+            }
+        } catch (error) {
+            alert("An error occurred while deleting the user.");
+        }
+    };
+    
+
     const permissionLabels = {
         perm1: "Access To User Table",
         perm2: "Allow Updating Delivery Status",
@@ -147,36 +169,40 @@ const ChangeLog = () => {
                             <h4 className="mb-0">All Users</h4>
                         </Card.Header>
                         <Table responsive className="text-nowrap mb-0">
-                            <thead className="table-light">
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
-                                    {JSON.parse(localStorage.getItem("user"))?.role === "admin" && <th>Edit Permissions</th>}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredUsers
-                                    .filter(user => user._id !== JSON.parse(localStorage.getItem("user"))?.id)
-                                    .map((user, index) => (
-                                        <tr key={index}>
-                                            <td className="align-middle">{user.name}</td>
-                                            <td className="align-middle">{user.email}</td>
-                                            <td className="align-middle">{user.role}</td>
-                                            <td className="align-middle">
-                                                <span className={`badge ${user.perm5 ? "bg-success" : "bg-danger"}`}>
-                                                    {user.perm5 ? "Active" : "Inactive"}
-                                                </span>
-                                            </td>
-                                            {JSON.parse(localStorage.getItem("user"))?.role === "admin" && user.role !== "admin" && (
-                                                <td className="text-dark">
-                                                    <OverlayTrigger
-                                                        key="top"
-                                                        placement="top"
-                                                        overlay={<Tooltip>Edit Permissions</Tooltip>}
-                                                    >
-                                                        <Button
+                        <thead className="table-light">
+    <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Status</th>
+        {JSON.parse(localStorage.getItem("user"))?.role === "admin" && <th>Edit Permissions</th>}
+        {JSON.parse(localStorage.getItem("user"))?.role === "admin" && <th>Delete User</th>}
+    </tr>
+</thead>
+
+<tbody>
+    {filteredUsers
+        .filter(user => user._id !== JSON.parse(localStorage.getItem("user"))?.id)
+        .map((user, index) => (
+            <tr key={index}>
+                <td className="align-middle">{user.name}</td>
+                <td className="align-middle">{user.email}</td>
+                <td className="align-middle">{user.role}</td>
+                <td className="align-middle">
+                    <span className={`badge ${user.perm5 ? "bg-success" : "bg-danger"}`}>
+                        {user.perm5 ? "Active" : "Inactive"}
+                    </span>
+                </td>
+                {JSON.parse(localStorage.getItem("user"))?.role === "admin" && user.role !== "admin" && (
+                    <>
+                        {/* Edit Permissions Column */}
+                        <td className="text-dark">
+                            <OverlayTrigger
+                                key="top"
+                                placement="top"
+                                overlay={<Tooltip>Edit Permissions</Tooltip>}
+                            >
+                                <Button
                                                             variant="none"
                                                             onClick={() => handleEditPermissions(user)}
                                                         >
@@ -184,12 +210,31 @@ const ChangeLog = () => {
                                                                 <path fillRule="evenodd" d="M14.5 1.5a.5.5 0 0 1 .5.5v4.8a2.5 2.5 0 0 1-2.5 2.5H2.707l3.347 3.346a.5.5 0 0 1-.708.708l-4.2-4.2a.5.5 0 0 1 0-.708l4-4a.5.5 0 1 1 .708.708L2.707 8.3H12.5A1.5 1.5 0 0 0 14 6.8V2a.5.5 0 0 1 .5-.5" />
                                                             </svg>
                                                         </Button>
-                                                    </OverlayTrigger>
-                                                </td>
-                                            )}
-                                        </tr>
-                                    ))}
-                            </tbody>
+                            </OverlayTrigger>
+                        </td>
+                        {/* Delete User Column */}
+                        <td className="text-dark">
+                            <OverlayTrigger
+                                key="top-delete"
+                                placement="top"
+                                overlay={<Tooltip>Delete User</Tooltip>}
+                            >
+                                <Button
+                                    variant="none"
+                                    onClick={() => handleDeleteUser(user)}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" className="bi bi-trash" viewBox="0 0 16 16">
+                                        <path d="M5.5 5.5A.5.5 0 0 1 6 5h4a.5.5 0 0 1 .5.5V13a1 1 0 0 1-1 1H6.5a1 1 0 0 1-1-1V5.5zm3-1.5V4H8v-.5a.5.5 0 0 1 .5-.5H9a.5.5 0 0 1 .5.5zM4.118 4 4 4.118V13a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V4.118L11.882 4H4.118zM3.5 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1H14v1h-1v9a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V4H2V3h1.5z" />
+                                    </svg>
+                                </Button>
+                            </OverlayTrigger>
+                        </td>
+                    </>
+                )}
+            </tr>
+        ))}
+</tbody>
+
                         </Table>
                     </Card>
                 </Col>

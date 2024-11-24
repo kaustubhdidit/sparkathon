@@ -3,14 +3,15 @@
 import { Row, Col, Modal, Container, Card, Table, Button, Form } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { useUser } from 'src/context/userContext';
-import { useRouter } from 'next/navigation';
 
 const Billing = () => {
   const { user } = useUser();
   const [products, setProducts] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [availabilityFilter, setAvailabilityFilter] = useState('all'); // 'all', 'available', 'unavailable'
   const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [newProduct, setNewProduct] = useState({
-    pid: '', // Added field for Product Id
+    pid: '',
     name: '',
     description: '',
     price: '',
@@ -41,15 +42,13 @@ const Billing = () => {
 
   const handleToggleAvailability = async (pid) => {
     try {
-      // Find the product to update
       const productToUpdate = products.find((product) => product.pid === pid);
-  
+
       if (!productToUpdate) {
         console.error('Product not found.');
         return;
       }
-  
-      // Make an API call to update the availability in the backend
+
       const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/products/updateAva`, {
         method: 'POST',
         headers: {
@@ -57,14 +56,13 @@ const Billing = () => {
         },
         body: JSON.stringify({
           pid: productToUpdate.pid,
-          available: !productToUpdate.available, // Toggle availability
+          available: !productToUpdate.available,
         }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
-        // Update the product's availability in the frontend state
         const updatedProducts = products.map((product) =>
           product.pid === pid ? { ...product, available: !product.available } : product
         );
@@ -76,11 +74,31 @@ const Billing = () => {
       console.error('Error:', error);
     }
   };
-  
+
+  const handleSearch = () => {
+    let filteredProducts = [...products];
+
+    if (searchQuery) {
+      filteredProducts = filteredProducts.filter(
+        (product) =>
+          product.pid.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    if (availabilityFilter !== 'all') {
+      const isAvailable = availabilityFilter === 'available';
+      filteredProducts = filteredProducts.filter(
+        (product) => product.available === isAvailable
+      );
+    }
+
+    return filteredProducts;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewProduct(prevState => ({
+    setNewProduct((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -99,7 +117,7 @@ const Billing = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setProducts(prevProducts => [...prevProducts, data.product]);
+        setProducts((prevProducts) => [...prevProducts, data.product]);
         setShowAddProductModal(false);
       } else {
         console.error('Error adding product:', data);
@@ -109,10 +127,31 @@ const Billing = () => {
     }
   };
 
+  const filteredProducts = handleSearch();
+
   return (
     <Container fluid className="p-6">
+      {/* Search and Filter */}
       <Row className="mb-4">
-        <Col md={12}>
+        <Col md={6}>
+          <Form.Control
+            type="text"
+            placeholder="Search by Product ID or Name"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </Col>
+        <Col md={4}>
+          <Form.Select
+            value={availabilityFilter}
+            onChange={(e) => setAvailabilityFilter(e.target.value)}
+          >
+            <option value="all">All</option>
+            <option value="available">Available</option>
+            <option value="unavailable">Unavailable</option>
+          </Form.Select>
+        </Col>
+        <Col md={2}>
           <Button variant="primary" onClick={() => setShowAddProductModal(true)}>
             Add Product
           </Button>
@@ -137,21 +176,20 @@ const Billing = () => {
                 </tr>
               </thead>
               <tbody>
-                {products.map((product, index) => (
+                {filteredProducts.map((product, index) => (
                   <tr key={index}>
                     <td>{product.pid}</td>
                     <td>{product.name}</td>
                     <td>{product.description}</td>
                     <td>{product.price}</td>
                     <td>
-                    <Form.Check
-  type="switch"
-  id={`availability-${product.pid}`}
-  label={product.available ? 'Available' : 'Unavailable'}
-  checked={product.available}
-  onChange={() => handleToggleAvailability(product.pid)}
-/>
-
+                      <Form.Check
+                        type="switch"
+                        id={`availability-${product.pid}`}
+                        label={product.available ? 'Available' : 'Unavailable'}
+                        checked={product.available}
+                        onChange={() => handleToggleAvailability(product.pid)}
+                      />
                     </td>
                   </tr>
                 ))}
@@ -179,7 +217,6 @@ const Billing = () => {
                   placeholder="Enter product id"
                 />
               </Form.Group>
-
               <Form.Group className="mb-3">
                 <Form.Label>Product Name</Form.Label>
                 <Form.Control
@@ -190,7 +227,6 @@ const Billing = () => {
                   placeholder="Enter product name"
                 />
               </Form.Group>
-
               <Form.Group className="mb-3">
                 <Form.Label>Description</Form.Label>
                 <Form.Control
@@ -201,7 +237,6 @@ const Billing = () => {
                   placeholder="Enter product description"
                 />
               </Form.Group>
-
               <Form.Group className="mb-3">
                 <Form.Label>Price per Unit</Form.Label>
                 <Form.Control
@@ -212,14 +247,13 @@ const Billing = () => {
                   placeholder="Enter product price"
                 />
               </Form.Group>
-
               <Form.Group className="mb-3">
                 <Form.Check
                   type="checkbox"
                   label="Available"
                   checked={newProduct.available}
                   onChange={() =>
-                    setNewProduct(prev => ({ ...prev, available: !prev.available }))
+                    setNewProduct((prev) => ({ ...prev, available: !prev.available }))
                   }
                 />
               </Form.Group>
