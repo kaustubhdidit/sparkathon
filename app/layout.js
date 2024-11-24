@@ -2,9 +2,9 @@
 import 'styles/theme.scss';
 import { UserProvider } from 'src/context/userContext';
 export const metadata = {
-    title: 'TrailBlazers',
-    description: 'Kaustubh and Rohan',
-    keywords: 'Sparkathon, Kaustubh, Rohan, Return, Dashboard'
+    title: 'Spark RBAC',
+    description: 'Kaustubh',
+    keywords: 'Sparkathon, Kaustubh Inventory Management'
 }
 
 export default function RootLayout({ children }) {
