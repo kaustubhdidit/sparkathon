@@ -39,11 +39,11 @@ export const UserProvider = ({ children }) => {
   
 
   // Save user to localStorage whenever it changes
-  useEffect(() => {
-    if (user.id !== null) { // Avoid storing the initial empty state
-      localStorage.setItem("user", JSON.stringify(user));
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user.id !== null) { // Avoid storing the initial empty state
+  //     localStorage.setItem("user", JSON.stringify(user));
+  //   }
+  // }, [user]);
 
   const updateUser = (userData) => {
     setUser((prevUser) => ({

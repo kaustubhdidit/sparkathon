@@ -67,7 +67,6 @@ const SignUp = () => {
       
             // Persist data in localStorage
             localStorage.setItem('authData', authToken); // Store token securely
-            // localStorage.setItem('user', JSON.stringify(userData.user)); // Persist user data
       
               router.push('/');
           } else {

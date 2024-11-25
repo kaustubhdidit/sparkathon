@@ -61,7 +61,6 @@ const SignIn = () => {
 
             // Persist data in localStorage
             localStorage.setItem('authData', authToken); // Store token securely
-            // localStorage.setItem('user', JSON.stringify(userData.user)); // Persist user data
 
             // Redirect to home page
             router.push('/');
