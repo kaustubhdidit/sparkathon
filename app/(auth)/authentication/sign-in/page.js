@@ -86,7 +86,11 @@ const SignIn = () => {
           <Card.Body className="p-6">
             <div className="mb-4">
             <h1 color='secondary'>Sign In</h1>
-              <p className="mb-6">Please enter your user information.</p>
+              <p style={{
+    background: "linear-gradient(to right, red, blue)", // Gradient colors
+    WebkitBackgroundClip: "text", // Clips the background to the text
+    WebkitTextFillColor: "transparent", // Makes the text itself transparent
+  }} className="mb-6">If not getting response, please wait, initial Backend start up (after inactivity) takes around 40 seconds.</p>
             </div>
             {/* Form */}
             {hasMounted &&

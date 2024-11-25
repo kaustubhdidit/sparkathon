@@ -87,7 +87,11 @@ const SignUp = () => {
             <div className="mb-4">
               {/* <Link href="/"><Image src="/images/brand/logo/logo-primary.svg" className="mb-2" alt="" /></Link> */}
               <h1 color='secondary'>Sign Up</h1>
-              <p className="mb-6">Please enter your user information.</p>
+              <p style={{
+    background: "linear-gradient(to right, red, blue)", // Gradient colors
+    WebkitBackgroundClip: "text", // Clips the background to the text
+    WebkitTextFillColor: "transparent", // Makes the text itself transparent
+  }} className="mb-6">If not getting response, please wait, initial Backend start up (after inactivity) takes around 40 seconds.</p>
             </div>
             {/* Form */}
             {hasMounted && 
