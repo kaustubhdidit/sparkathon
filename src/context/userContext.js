@@ -19,11 +19,24 @@ export const UserProvider = ({ children }) => {
 
   // Load user from localStorage on component mount
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const authToken = localStorage.getItem("authData");
+  
+    if (authToken) {
+      const base64Url = authToken.split('.')[1]; // Extract payload
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // Fix Base64 encoding
+      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+      }).join(''));
+  
+      const userData = JSON.parse(jsonPayload).user; // Get user from the payload
+       console.log("Extracted")
+      console.log(userData)
+      if (userData) {
+        setUser(userData); // Use directly without parsing again
+      }
     }
   }, []);
+  
 
   // Save user to localStorage whenever it changes
   useEffect(() => {

@@ -4,6 +4,8 @@ import { Row, Col, Container } from 'react-bootstrap';
 import Link from 'next/link';
 import { Card, Table, Button, Tooltip, OverlayTrigger, Modal, Form } from 'react-bootstrap';
 import { PageHeading } from 'widgets';
+import { useUser } from 'src/context/userContext';
+
 import { useState, useEffect } from 'react';
 
 const ChangeLog = () => {
@@ -12,9 +14,11 @@ const ChangeLog = () => {
     const [showModal, setShowModal] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
     const [permissions, setPermissions] = useState({});
+    const {user}=useUser();
+    const roler=user.role;
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState('all'); // 'all', 'active', 'inactive'
-
+// console.log(roler)
     // Fetch users from API
     const getAllUsers = async () => {
         try {
@@ -175,14 +179,15 @@ const ChangeLog = () => {
         <th>Email</th>
         <th>Role</th>
         <th>Status</th>
-        {JSON.parse(localStorage.getItem("user"))?.role === "admin" && <th>Edit Permissions</th>}
-        {JSON.parse(localStorage.getItem("user"))?.role === "admin" && <th>Delete User</th>}
+        
+        {roler === "admin" && <th>Edit Permissions</th>}
+        {roler === "admin" && <th>Delete User</th>}
     </tr>
 </thead>
 
 <tbody>
     {filteredUsers
-        .filter(user => user._id !== JSON.parse(localStorage.getItem("user"))?.id)
+        .filter(user => user._id !== user.id)
         .map((user, index) => (
             <tr key={index}>
                 <td className="align-middle">{user.name}</td>
@@ -193,7 +198,7 @@ const ChangeLog = () => {
                         {user.perm5 ? "Active" : "Inactive"}
                     </span>
                 </td>
-                {JSON.parse(localStorage.getItem("user"))?.role === "admin" && user.role !== "admin" && (
+                {roler === "admin" && user.role !== "admin" && (
                     <>
                         {/* Edit Permissions Column */}
                         <td className="text-dark">

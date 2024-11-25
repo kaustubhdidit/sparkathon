@@ -54,13 +54,20 @@ const SignUp = () => {
 
             // Extract user and token details
             const { authToken, data: userData } = data;
+
+            const base64Url = authToken.split('.')[1]; // Extract payload
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // Fix Base64 encoding
+            const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            console.log(JSON.parse(jsonPayload).user)
       
             // Update UserContext
             updateUser(userData.user);
       
             // Persist data in localStorage
             localStorage.setItem('authData', authToken); // Store token securely
-            localStorage.setItem('user', JSON.stringify(userData.user)); // Persist user data
+            // localStorage.setItem('user', JSON.stringify(userData.user)); // Persist user data
       
               router.push('/');
           } else {
