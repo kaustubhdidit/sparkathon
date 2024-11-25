@@ -1,5 +1,19 @@
 # Assignment - RBAC App Frontend
 
+## 📹 Video Walkthrough  
+- [Watch the walkthrough video here](https://youtu.be/tM-yvjeXqWQ)
+
+## Important Note:
+The backend is deployed on a free-tier Render service, which automatically spins down when inactive. Please allow up to 1 minute for the backend to start when accessing the application.
+
+## ⚡️ Live Link  
+- [Deployment Link](https://sparkathon.vercel.app)
+
+## Backend Repo
+- [Backend Link](https://github.com/kaustubhdidit/SparkBackend)
+
+---
+
 This is the frontend of the Sparkathon application, built using React and Next.js. The app provides a user interface for role-based access control (RBAC) that interacts with the backend API for managing orders, user roles, and other functionalities.
 
 ## Prerequisites
